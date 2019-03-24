@@ -1,0 +1,5 @@
+com\words\entity\User.class
+com\words\Controller\UserController.class
+com\words\home.class
+com\words\repository\UserRepository.class
+com\words\Application.class
