@@ -3,6 +3,7 @@ package com.words.Controller;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,35 +27,39 @@ public class UserController {
 	public UserRepository userRepo;
 	
 	@GetMapping
-	public Iterable<User> findAll(){
-		return userRepo.findAll();
+	public ResponseEntity findAll(){
+		return ResponseEntity.ok(userRepo.findAll());
 	}
 	
 	
 	@GetMapping(value = "/{username}")
-	public Optional<User> findUsername(@PathVariable("username") String username) {
+	public ResponseEntity findUsername(@PathVariable("username") String username) {
 		
-		return userRepo.findById(username);
+		return ResponseEntity.ok(userRepo.findById(username));
 	
 	}
 	
 	@PostMapping(consumes = "application/json")
-	public User createUser(@RequestBody User user) {
-		return userRepo.save(user);
+	public ResponseEntity createUser(@RequestBody User user) {
+		return ResponseEntity.ok(userRepo.save(user));
 	}
 	
 	@DeleteMapping(path = "/{username}")
-	public void delUser(@PathVariable("username") String username) {
+	public ResponseEntity delUser(@PathVariable("username") String username) {
 		
+		User user = userRepo.findById(username).get();
 		userRepo.deleteById(username);
+		return ResponseEntity.ok(user);
+		
 	}
 	
 	@PutMapping(value = "/{username}")
-	public void updateUser(@PathVariable("username") String username, @RequestBody User user ) throws BadHttpRequest {
+	public ResponseEntity updateUser(@PathVariable("username") String username, @RequestBody User user ) throws BadHttpRequest {
 		
 		if(userRepo.existsById(username)) {
 			user.setUsername(username);
-			userRepo.save(user);
+			User user1 = userRepo.save(user);
+			return ResponseEntity.ok(user1);
 		}
 		else { throw new BadHttpRequest(); }
 	}
